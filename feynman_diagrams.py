@@ -777,8 +777,11 @@ def on_key_press(event):
         selected_object.deselect()
         selected_object = None
     if isinstance(selected_object, (VertexTarget, LegTarget)):
-        if k in 'io-':
-            selected_object.arrow_out = None if k == '-' else k == 'o'
+        if k in 'io':
+            selected_object.arrow_out = k == 'o'
+        if k == '-':
+            selected_object.arrow_out = None
+            selected_object.shape = None
         if k in 'gph':
             selected_object.shape = k
     if k in 'ex':
