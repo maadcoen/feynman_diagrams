@@ -34,6 +34,8 @@ import logging
 
 
 permanent_selection_time = 0.25
+saved = 0
+save_to = '/Users/maadcoen/Documents/PhD/teaching/SubA_II/suba_exercises/images'
 os.remove('feynman_QED.log')
 logging.basicConfig(filename='feynman_QED.log', encoding='utf-8', level=logging.INFO, force=True,
                     format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%H:%M:%S')
@@ -785,7 +787,7 @@ class Vertex(SelectObject):
 
 
 def on_key_press(event):
-    global selected_object
+    global selected_object, saved
     k = event.key
     if k in 'sfq' or k.isnumeric():
         if selected_object is not None:
@@ -818,6 +820,10 @@ def on_key_press(event):
         for v in Vertex.vertices[::-1]:
             v.deselect() if k == 'e' else v.remove()
         selected_object = None
+    if k == 'm':
+        fig.savefig(os.path.join(save_to, f'feynman_diagram_{saved}.pdf'),
+                    bbox_inches='tight')
+        saved += 1
     fig.canvas.draw()
 
 
