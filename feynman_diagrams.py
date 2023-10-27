@@ -1,11 +1,11 @@
 import os
-
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.path import Path
 import matplotlib.patches as mpatch
 import time
 import logging
+
 
 permanent_selection_time = 0.25
 os.remove('feynman_QED.log')
@@ -54,7 +54,6 @@ class Target(SelectObject):
         self.orginal_rel_loc = rel_loc
         self.active_color = active_color
         self.radius = radius
-        # passive_color = 'green'
         self.passive_color = passive_color
         self.ax = plt.gca() if ax is None else ax
         self._patch = None
@@ -221,12 +220,6 @@ class VertexTarget(Target):
         self.leg.deselect()
 
         del target.connect
-        # target._connect = None
-        # logging.info(f'restoring position {target}')
-        # target.move(force=True, restore=True)
-        # #target.patch.set_picker(True)
-        # target.leg.visible = True
-        # target.vertex.make_path(draw=False)
 
     def move(self, loc=None, force=False, redraw=True, restore=False):
         if loc is None and self.connect is not None:
@@ -460,7 +453,6 @@ class Leg(SelectObject):
         line_vertices = trans @ line_vertices
         line_vertices[0] /= l1
         line_vertices[1, -1] = 0
-        print(line_vertices[:, 0], line_vertices[:, -1])
         if self.target.connect is not None:
             l2 = self.signed_distance(self.leg_target.loc)
             if np.abs(l2) > 1e-4:
@@ -480,7 +472,6 @@ class Leg(SelectObject):
                 line_vertices[0] *= l0
         else:
             line_vertices[0] *= l0
-
 
         trans = np.array([[np.cos(th0), -np.sin(th0)],
                           [np.sin(th0), np.cos(th0)]])
@@ -646,11 +637,6 @@ class Vertex(SelectObject):
                                              arrow_out=None if arrows is None else arrows[k],
                                              shape=None if shapes is None else shapes[k]))
 
-        # elf.legs = [Leg(t, a) for t, a in zip(arrows)]
-        # for i, a in enumerate(self.arrows):
-        #     self.make_arrow(i, a, redraw=False)
-
-        # self.patch = mpatch.PathPatch(self.make_path(change_patch=False), **self.patch_kwargs)
         self.select_time = None
         self.select_target = None
         self.fixed = fixed
@@ -698,7 +684,6 @@ class Vertex(SelectObject):
         if super().select() is None:
             return
         for t in self.targets[1:]:
-            # print(t.leg.visible)
             t.leg.select()
         if self.select_target == self.center:
             self.select_target.select()
@@ -712,7 +697,6 @@ class Vertex(SelectObject):
             t.deselect()
         if not keep_target:
             self.select_target = None
-        print(f'deselecting {self}')
         return self
 
     def freeze(self):
@@ -747,12 +731,6 @@ class Vertex(SelectObject):
     def connect(self, other):
         if other.select_target not in other.targets:
             return
-        # check_connection = [t.connect in other.targets for t in self.targets]
-        # if any(check_connection):
-        #     idx = check_connection.index(True)
-        #     print(f'disconnecting {self} and {self.targets[idx].connect.vertex}')
-        #     del self.targets[idx].connect
-        #     return
         t_self = self.targets[1] if len(self.targets) == 2 else self.select_target
         t_other = other.targets[1] if len(other.targets) == 2 else other.select_target
 
@@ -766,26 +744,16 @@ class Vertex(SelectObject):
         elif not (t_self.leg.arrow_out ^ t_other.leg.arrow_out):
             return
         t_self.connect = t_other
-        print(f'paths {self}')
         self.make_path()
-        print(f'paths {other}')
         other.make_path()
-
-    def make_path(self, draw=True):
-        pass
-        # for i, t in enumerate(self.targets):
-        #     t.leg.make_path()
-        # self.make_arrow(i, redraw=False)
 
     def remove(self):
         self.deselect()
         for t in self.targets:
             t.remove()
         Vertex.vertices.remove(self)
-        print(f'removing vertex {self.index}')
 
 
-# Function to add a central point with three legs when you press 'a' and click on the plot
 def on_key_press(event):
     global selected_object
     k = event.key
@@ -820,7 +788,6 @@ def on_key_press(event):
     fig.canvas.draw()
 
 
-# Function to select a central point when you click on it
 def on_pick(event):
     global selected_object
     logging.info('picking')
@@ -845,7 +812,6 @@ def on_pick(event):
             if selected_object is None:
                 selected_object = v.select()
             elif isinstance(selected_object, (VertexTarget, Vertex)):
-                print(f'connecting vertices {v} and {selected_object}')
                 vert = selected_object if isinstance(selected_object, Vertex) else selected_object.vertex
                 vert.connect(v)
                 selected_object.deselect()
@@ -854,8 +820,6 @@ def on_pick(event):
             logging.info(f'selected object is {selected_object}')
             return fig.canvas.draw()
     logging.info(f'selected object is {selected_object}')
-
-    # Function to move the selected central point and its associated legs when you drag it
 
 
 def on_motion(event):
@@ -875,8 +839,6 @@ def on_release(event):
         if time.time() - selected_object.select_time > permanent_selection_time / 1.1:
             logging.info(f'releasing {selected_object}')
             selected_object.deselect()
-            # for v in Vertex.vertices:
-            #     v.deselect()
             selected_object = None
             fig.canvas.draw()
         elif isinstance(selected_object, Vertex):
