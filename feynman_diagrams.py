@@ -780,6 +780,9 @@ class Vertex(SelectObject):
             t.remove()
         Vertex.vertices.remove(self)
 
+    def make_path(self, draw=True):
+        pass
+
 
 def on_key_press(event):
     global selected_object
