@@ -766,7 +766,7 @@ def on_key_press(event):
                       th0=np.pi if k == 'f' else 0,
                       arrows=[None, True, False] if k == 'q' else None,
                       shapes=['photon', None, None] if k == 'q' else None,
-                      fixed=k in 'if', ax=event.inaxes, center_mark=k in 'sf')
+                      ax=event.inaxes, center_mark=k in 'sf')
         selected_object = Vertex(event.xdata, event.ydata, **kwargs)
         selected_object.select()
 
