@@ -748,6 +748,7 @@ class Vertex(SelectObject):
         other.make_path()
 
     def remove(self):
+        logging.info(f'remove {self}')
         self.deselect()
         for t in self.targets:
             t.remove()
