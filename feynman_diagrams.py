@@ -34,8 +34,10 @@ import logging
 
 saved = 0
 save_to = '/Users/maadcoen/Documents/PhD/teaching/SubA_II/suba_exercises/images'
-os.remove('feynman_QED.log')
-logging.basicConfig(filename='feynman_QED.log', encoding='utf-8', level=logging.INFO, force=True,
+logfile = 'feynman_QED.log'
+if os.path.exists(logfile):
+    os.remove(logfile)
+logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.INFO, force=True,
                     format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%H:%M:%S')
 
 
