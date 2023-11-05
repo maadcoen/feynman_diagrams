@@ -68,6 +68,9 @@ class SelectObject:
         self.moving = False
         return self
 
+    def freeze(self):
+        self.moving = False
+
 
 selected_object: SelectObject = None
 
@@ -164,9 +167,6 @@ class Target(SelectObject):
     def hit(self, click_event):
         if click_event.artist == self:
             return self
-
-    def freeze(self):
-        self.moving = False
 
 
 class VertexTarget(Target):
@@ -723,9 +723,6 @@ class Vertex(SelectObject):
         if not keep_target:
             self.select_target = None
         return self
-
-    def freeze(self):
-        self.moving = False
 
     def make_arrow(self, t_idx=None, out=None):
         if t_idx is None:
