@@ -943,13 +943,9 @@ for ax in axes.flatten():
     ax.set_ylim(0, 10)
     ax.axis(False)
 
-plt.rcParams['keymap.zoom'].remove('o')
-plt.rcParams['keymap.fullscreen'].remove('f')
-plt.rcParams['keymap.save'].remove('s')
-plt.rcParams['keymap.quit'].remove('q')
-plt.rcParams['keymap.home'].remove('h')
-plt.rcParams['keymap.pan'].remove('p')
-plt.rcParams['keymap.grid'].remove('g')
+for k in plt.rcParams:
+    if 'keymap.' in k:
+        plt.rcParams[k] = []
 
 # Connect the events
 fig.canvas.mpl_connect('key_press_event', on_key_press)
