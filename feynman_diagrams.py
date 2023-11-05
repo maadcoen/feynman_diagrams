@@ -32,8 +32,6 @@ import matplotlib.patches as mpatch
 import time
 import logging
 
-
-permanent_selection_time = 0.25
 saved = 0
 save_to = '/Users/maadcoen/Documents/PhD/teaching/SubA_II/suba_exercises/images'
 os.remove('feynman_QED.log')
@@ -859,6 +857,9 @@ def on_pick(event):
             logging.info(f'selected object is {selected_object}')
             return fig.canvas.draw()
     logging.info(f'selected object is {selected_object}')
+
+
+permanent_selection_time = 0.15
 
 
 def on_motion(event):
