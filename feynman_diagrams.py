@@ -47,9 +47,6 @@ class SelectObject:
         self.parent = parent
         self.moving = False
 
-    def _default_loc(self):
-        return self._original_loc
-
     def select(self):
         if self.select_time is not None:
             self.select_time = time.time()
