@@ -183,6 +183,8 @@ class Target(SelectObject):
     def hit(self, click_event):
         if click_event.artist == self:
             return self
+        if click_event.artist == self.label:
+            return self.label
 
 
 class VertexTarget(Target):
