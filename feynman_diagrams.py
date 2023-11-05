@@ -18,10 +18,12 @@ Code to draw feynman diagrams.
 - other press commands:
     - s: add initial state particle (one-prong to the right with the centre indicated as a dot)
     - f: add final state particle (one-prong to the left with the centre indicated as a dot)
-    - q: add qcd vertex
+    - q: add QED vertex
+    - Q: add QCD vertex
     - e: deselect all
     - d: remove selected connection or vertex
     - x: remove everything
+
 - label adding mode:
     1) selected a vertex, a connection, or a prong
     2) move the pointer to the desired location
@@ -842,14 +844,14 @@ def on_key_press(event):
         selected_object.select()
         selected_object.move((event.xdata, event.ydata), force=True)
 
-    if k in 'sfq' or k.isnumeric():
+    if k in 'sfqQ' or k.isnumeric():
         if selected_object is not None:
             selected_object.deselect()
             selected_object = None
-        kwargs = dict(n_prongs=int(k) if k.isnumeric() else (3 if k == 'q' else 1),
+        kwargs = dict(n_prongs=int(k) if k.isnumeric() else (3 if k.lower() == 'q' else 1),
                       th0=np.pi if k == 'f' else 0,
-                      arrows=[None, True, False] if k == 'q' else None,
-                      shapes=['photon', None, None] if k == 'q' else None,
+                      arrows=[None, True, False] if k.lower() == 'q' else None,
+                      shapes=['photon' if k == 'q' else 'gluon', None, None] if k.lower() == 'q' else None,
                       ax=event.inaxes, center_mark=k in 'sf')
         selected_object = Vertex(event.xdata, event.ydata, **kwargs)
         selected_object.select()
