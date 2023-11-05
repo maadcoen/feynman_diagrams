@@ -783,7 +783,7 @@ class Vertex(SelectObject):
         t_self = self.targets[1] if len(self.targets) == 2 else self.select_target
         t_other = other.targets[1] if len(other.targets) == 2 else other.select_target
 
-        if t_self == self.targets[0] or t_other == other.targets[0]:
+        if t_self == self.center or t_other == other.center:
             return
         if t_self.leg.shape != t_self.leg.shape:
             return
