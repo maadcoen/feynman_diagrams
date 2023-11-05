@@ -612,48 +612,58 @@ class Leg(SelectObject):
         del self.target.connect
 
 
-class Text(SelectObject):
-    def __init__(self, text, target, rel_loc=(0, 0), **text_args):
-        super().__init__()
-        self.target: Target = target
-        self.connect_target = None
-        self.rel_loc = rel_loc
-        self._text: plt.Text = self.target.ax.text(*self.loc, text, **text_args)
+class Text(Target):
+    def __init__(self, text, target, rel_loc=(0, 0), radius=0.15, passive_color='black', active_color='red', **text_args):
+        super().__init__(target, rel_loc, radius, passive_color, active_color)
+        self._text = text
+        def_text_args = dict(ha='center', va='center', fontsize=15)
+        def_text_args |= text_args
+        self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
+        self.target = self.parent
+        self.target.label = self
 
-    @property
-    def loc(self):
-        t_loc = self.target.loc
-        return t_loc[0] + self.rel_loc[0], t_loc[1] + self.rel_loc[1]
-
-    @loc.setter
-    def loc(self, loc):
-        t_loc = self.target.loc
-        self.rel_loc = (loc[0] - t_loc[0], loc[1] - t_loc[1])
-
-    def move(self, rel_loc=(0, 0)):
-        self.rel_loc = rel_loc
-
+    def move(self, loc=None, force=False, redraw=True, restore=False):
+        super().move(loc, force, redraw, restore)
+        self._text_patch.set_position(self.loc)
+        
     @property
     def text(self):
-        return self._text.get_text()
+        return self._text
 
     @text.setter
     def text(self, text):
-        self._text.set_text(text)
+        self._text = text
+        self._text_patch.set_text(text)
 
     def select(self):
         if super().select() is None:
             return
-        self.text.set_color(self.target.active_color)
-        self.text.set_zorder(np.inf)
+        self.patch.set_visible(False)
+        self.patch.set_color(self.passive_color )
+        self._text_patch.set_color(self.target.active_color)
+        self._text_patch.set_zorder(np.inf)
         return self
 
     def deselect(self):
         if super().deselect():
             return
-        self.text.set_color(self.target.passive_color)
-        self.text.set_zorder(-1)
+        self._text_patch.set_color(self.passive_color)
+        self._text_patch.set_zorder(-1)
         return self
+
+    def __iadd__(self, other: str):
+        self.text = self.text + other
+        return self
+
+    def undo(self):
+        self.text = self.text[:-1]
+
+    def __str__(self):
+        return f"Text('{self.text}') for {self.parent}"
+
+    def remove(self):
+        super().remove()
+        self._text_patch.remove()
 
 
 class Vertex(SelectObject):
