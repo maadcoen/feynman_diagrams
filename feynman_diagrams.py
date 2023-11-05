@@ -155,8 +155,6 @@ class Target(SelectObject):
             self.patch.set_center(loc)
         else:
             self.patch.set_center(self._default_loc())
-        if redraw:
-            self.parent.make_path()
 
     def remove(self):
         del self.patch
@@ -241,7 +239,6 @@ class VertexTarget(Target):
         self.move(force=True, restore=True)
         # self.patch.set_picker(True)
         self.leg.visible = True
-        self.vertex.make_path(draw=False)
         self.leg.deselect()
 
         del target.connect
@@ -303,6 +300,8 @@ class LegTarget(Target):
             r = n0 * (loc[0] - x) + n1 * (loc[1] - y)
             loc = x + r * n0, y + r * n1
         super().move(loc, force, redraw, restore)
+        if redraw:
+            self.leg.make_path()
 
     @property
     def arrow_out(self):
@@ -668,7 +667,6 @@ class Vertex(SelectObject):
 
         Vertex.vertices.append(self)
         Vertex.count += 1
-        self.make_path()
 
     def __str__(self):
         return f'vertex {self.index}'
@@ -687,10 +685,6 @@ class Vertex(SelectObject):
             self.loc = (self.loc[0] + x, self.loc[1] + y)
             for i, t in enumerate(self.targets):
                 t.move(redraw=False, force=True)
-                if t != self.center and t.connect is not None:
-                    c: Target = t.connect
-                    c.vertex.make_path(draw=False)
-            self.make_path()
 
     def hit(self, click_event):
         for t in self.targets:
@@ -766,8 +760,6 @@ class Vertex(SelectObject):
         elif not (t_self.leg.arrow_out ^ t_other.leg.arrow_out):
             return
         t_self.connect = t_other
-        self.make_path()
-        other.make_path()
 
     def remove(self):
         logging.info(f'remove {self}')
@@ -775,9 +767,6 @@ class Vertex(SelectObject):
         for t in self.targets:
             t.remove()
         Vertex.vertices.remove(self)
-
-    def make_path(self, draw=True):
-        pass
 
 
 def on_key_press(event):
