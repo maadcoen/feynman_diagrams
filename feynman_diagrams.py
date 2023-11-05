@@ -1,39 +1,44 @@
 """
-Code to draw feynman diagrams.
+Feynman Diagram Drawing Application
 
-- press any number n from 1 to 10 to put vertex with n prongs
-- select a vertex by clicking on its centre
-- select a prong by clicking on its end
-- connect two prongs by clicking both ends one after the other
-- select a connection by clicking on its middle
-- move a vertex/prong or bend a connection by clicking, holding, and moving
-- change the appearance of a prong/connection by selecting it and pressing
-    - p: photon line (wave)
-    - h: scalar boson (dashed)
-    - g: gluon line (spring)
-    - i: inwards arrow (spring)
-    - o: outwards arrow
-    - -: flat
+This application allows you to draw Feynman diagrams with various features. You can create and manipulate vertices,
+vertex prongs, connections, and labels using a set of keyboard commands and mouse interactions.
 
-- other press commands:
-    - s: add initial state particle (one-prong to the right with the centre indicated as a dot)
-    - f: add final state particle (one-prong to the left with the centre indicated as a dot)
-    - q: add QED vertex
-    - Q: add QCD vertex
-    - e: deselect all
-    - d: remove selected connection or vertex
-    - x: remove everything
+Usage:
+    - Press any number (1 to 10) to create a vertex with the specified number of prongs.
+    - Select a vertex by clicking on its center.
+    - Select a prong by clicking on its end.
+    - Connect two prongs by clicking both ends sequentially.
+    - Select a connection by clicking on its middle.
+    - Move a vertex, prong, or bend a connection by clicking, holding, and moving.
+    - Change the appearance of a prong or connection by selecting it and pressing:
+        - 'p': Photon line (wave)
+        - 'h': Scalar boson (dashed)
+        - 'g': Gluon line (spring)
+        - 'i': Inwards arrow (spring)
+        - 'o': Outwards arrow
+        - '-': Flat
 
-- label adding mode:
-    1) selected a vertex, a connection, or a prong
-    2) move the pointer to the desired location
-    3) press t
-    4) start typing (supports latex commands in sofar matplotlib supports it)
-    5) press
-        - backspace: remove last added character
-        - enter: leave label adding mode and keep label
-        - escape: leave label adding mode and discard label
-    Labels can be clicked and moved like prongs and vertices, and will move together with the object they label
+Additional Commands:
+    - 's': Add an initial state particle (one-prong to the right with the center indicated as a dot).
+    - 'f': Add a final state particle (one-prong to the left with the center indicated as a dot).
+    - 'q': Add a QED vertex.
+    - 'Q': Add a QCD vertex.
+    - 'e': Deselect all selected objects.
+    - 'd': Remove the selected connection or vertex.
+    - 'x': Remove everything in the diagram.
+
+Label Adding Mode:
+    1. Select a vertex, a connection, or a prong.
+    2. Move the pointer to the desired location.
+    3. Press 't'.
+    4. Start typing (supports LaTeX commands if supported by matplotlib).
+    5. Press:
+        - 'backspace': Remove the last added character.
+        - 'enter': Leave label adding mode and keep the label.
+        - 'escape': Leave label adding mode and discard the label.
+
+Labels can be clicked and moved like prongs and vertices and will move together with the object they label.
 """
 
 import os
@@ -135,15 +140,15 @@ class Target(SelectObject):
     @loc.setter
     def loc(self, loc):
         self.move(loc, force=True)
-        
+
     @property
     def label(self):
         return self._label
-    
+
     @label.setter
     def label(self, label):
         self._label = label
-    
+
     @label.deleter
     def label(self):
         if self._label is not None:
@@ -625,7 +630,8 @@ class Leg(SelectObject):
 
 
 class Text(Target):
-    def __init__(self, text, target, rel_loc=(0, 0), radius=0.15, passive_color='black', active_color='red', **text_args):
+    def __init__(self, text, target, rel_loc=(0, 0), radius=0.15, passive_color='black', active_color='red',
+                 **text_args):
         super().__init__(target, rel_loc, radius, passive_color, active_color)
         self._text = text
         def_text_args = dict(ha='center', va='center', fontsize=15)
@@ -637,7 +643,7 @@ class Text(Target):
     def move(self, loc=None, force=False, redraw=True, restore=False):
         super().move(loc, force, redraw, restore)
         self._text_patch.set_position(self.loc)
-        
+
     @property
     def text(self):
         return self._text
@@ -651,7 +657,7 @@ class Text(Target):
         if super().select() is None:
             return
         self.patch.set_visible(False)
-        self.patch.set_color(self.passive_color )
+        self.patch.set_color(self.passive_color)
         self._text_patch.set_color(self.target.active_color)
         self._text_patch.set_zorder(np.inf)
         return self
