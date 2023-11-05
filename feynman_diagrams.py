@@ -807,6 +807,31 @@ class Vertex(SelectObject):
 def on_key_press(event):
     global selected_object, saved
     k = event.key
+    if isinstance(selected_object, Text):
+        if k == 'escape':
+            selected_object.remove()
+            selected_object = None
+        elif k == 'enter':
+            selected_object.deselect()
+            selected_object = None
+        elif k == 'backspace':
+            selected_object.undo()
+        elif len(k) == 1:
+            selected_object += k
+        return fig.canvas.draw()
+
+    if k == 't' and selected_object is not None:
+        if isinstance(selected_object, Vertex):
+            target = selected_object.center
+        elif isinstance(selected_object, Target):
+            target = selected_object
+        else:
+            return
+        selected_object.deselect()
+        selected_object = Text('', target)
+        selected_object.select()
+        selected_object.move((event.xdata, event.ydata), force=True)
+
     if k in 'sfq' or k.isnumeric():
         if selected_object is not None:
             selected_object.deselect()
