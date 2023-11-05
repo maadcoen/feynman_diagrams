@@ -502,7 +502,7 @@ class Leg(SelectObject):
             if np.abs(l2) > 1e-4:
                 r = ((l0 / 2) ** 2 + l2 ** 2) / (l2 * 2)
                 th = np.arcsin((l0 / 2) / r)
-                xx = (x - x[0])/ (x[-1] - x[0])
+                xx = (x - x[0]) / (x[-1] - x[0])
                 trans = (y + r) * np.exp(-1j * (xx * 2 * th + np.pi / 2 - th))
                 line_vertices = np.array([trans.real + trans.real[0], trans.imag - trans.imag[0]])
 
