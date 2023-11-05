@@ -926,7 +926,7 @@ def on_release(event):
             selected_object.deselect()
             selected_object = None
             fig.canvas.draw()
-        elif isinstance(selected_object, Vertex):
+        else:
             logging.info(f'freezing {selected_object}')
             selected_object.freeze()
     logging.info(f'selected object is {selected_object}')
