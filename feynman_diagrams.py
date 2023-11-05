@@ -284,10 +284,10 @@ class VertexTarget(Target):
     def hit(self, click_event):
         if self.connect is None:
             return super().hit(click_event)
-        elif self.leg.hit(click_event):
-            return self.leg.leg_target
-        elif self.connect.leg.hit(click_event):
-            return self.connect.leg.leg_target
+        for t in [self, self.connect]:
+            leg_hit = t.leg.hit(click_event)
+            if leg_hit is not None:
+                return leg_hit
 
     def deselect(self):
         if self.leg is not None:
@@ -603,7 +603,10 @@ class Leg(SelectObject):
             self.arrow_patch.set_color(self.target.passive_color)
 
     def hit(self, click_event):
-        return click_event.artist == self._leg_target
+        if click_event.artist == self.leg_target:
+            return self.leg_target
+        elif click_event.artist == self.leg_target.label:
+            return self.leg_target.label
 
     def disconnect(self):
         del self.target.connect
