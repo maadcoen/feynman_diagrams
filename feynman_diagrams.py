@@ -101,7 +101,7 @@ class Target(SelectObject):
         if self._patch is None:
             logging.info(f'creating patch for {self}')
             self._patch = mpatch.Circle(self._default_loc(), radius=self.radius, picker=True,
-                                        visible=self.passive_color is not None,
+                                        visible=self.passive_color is not None, alpha=0.3,
                                         color=self.active_color if self.passive_color is None else self.passive_color)
             self.ax.add_patch(self._patch)
         return self._patch
