@@ -785,6 +785,8 @@ class Vertex(SelectObject):
 
         if t_self == self.center or t_other == other.center:
             return
+        if t_self.vertex == t_other.vertex:
+            return
         if t_self.leg.shape != t_self.leg.shape:
             return
         if t_self.leg.arrow_out is None or t_other.leg.arrow_out is None:
