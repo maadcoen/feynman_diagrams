@@ -1,7 +1,6 @@
 """
 Code to draw feynman diagrams.
 
-
 - press any number n from 1 to 10 to put vertex with n prongs
 - select a vertex by clicking on its centre
 - select a prong by clicking on its end
@@ -9,19 +8,30 @@ Code to draw feynman diagrams.
 - select a connection by clicking on its middle
 - move a vertex/prong or bend a connection by clicking, holding, and moving
 - change the appearance of a prong/connection by selecting it and pressing
-    ** p: photon line (wave)
-    ** h: scalar boson (dashed)
-    ** g: gluon line (spring)
-    ** i: inwards arrow (spring)
-    ** o: outwards arrow
-    ** -: flat
+    - p: photon line (wave)
+    - h: scalar boson (dashed)
+    - g: gluon line (spring)
+    - i: inwards arrow (spring)
+    - o: outwards arrow
+    - -: flat
+
 - other press commands:
-    ** s: add initial state particle (one-prong to the right with the centre indicated as a dot)
-    ** f: add final state particle (one-prong to the left with the centre indicated as a dot)
-    ** q: add qcd vertex
-    ** e: deselect all
-    ** d: remove selected connection or vertex
-    ** x: remove everything
+    - s: add initial state particle (one-prong to the right with the centre indicated as a dot)
+    - f: add final state particle (one-prong to the left with the centre indicated as a dot)
+    - q: add qcd vertex
+    - e: deselect all
+    - d: remove selected connection or vertex
+    - x: remove everything
+- label adding mode:
+    1) selected a vertex, a connection, or a prong
+    2) move the pointer to the desired location
+    3) press t
+    4) start typing (supports latex commands in sofar matplotlib supports it)
+    5) press
+        - backspace: remove last added character
+        - enter: leave label adding mode and keep label
+        - escape: leave label adding mode and discard label
+    Labels can be clicked and moved like prongs and vertices, and will move together with the object they label
 """
 
 import os
