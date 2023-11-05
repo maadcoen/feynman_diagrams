@@ -85,6 +85,7 @@ class Target(SelectObject):
         self.passive_color = passive_color
         self.ax = plt.gca() if ax is None else ax
         self._patch = None
+        self._label = None
 
     @property
     def connect(self):
@@ -122,6 +123,20 @@ class Target(SelectObject):
     @loc.setter
     def loc(self, loc):
         self.move(loc, force=True)
+        
+    @property
+    def label(self):
+        return self._label
+    
+    @label.setter
+    def label(self, label):
+        self._label = label
+    
+    @label.deleter
+    def label(self):
+        if self._label is not None:
+            self._label.remove()
+        self._label = None
 
     def deselect(self):
         if super().deselect() is None:
@@ -131,6 +146,8 @@ class Target(SelectObject):
         else:
             self.patch.set_color(self.passive_color)
         self.patch.set_zorder(-1)
+        if self.label is not None:
+            self.label.deselect()
         return self
 
     def select(self):
@@ -158,6 +175,7 @@ class Target(SelectObject):
 
     def remove(self):
         del self.patch
+        del self.label
 
     def __copy__(self):
         return Target(self._default_loc, self.patch.radius, self.passive_color, self.active_color, self.ax)
