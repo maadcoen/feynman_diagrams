@@ -909,7 +909,7 @@ permanent_selection_time = 0.15
 
 def on_motion(event):
     if isinstance(selected_object, (Vertex, Target)) and event.button == 1:
-        if time.time() - selected_object.select_time < permanent_selection_time * 1.1:
+        if time.time() - selected_object.select_time < permanent_selection_time:
             return
         selected_object.move((event.xdata, event.ydata))
         fig.canvas.draw()
@@ -921,7 +921,7 @@ def on_release(event):
     logging.info('releasing')
 
     if selected_object is not None:
-        if time.time() - selected_object.select_time > permanent_selection_time / 1.1:
+        if time.time() - selected_object.select_time > permanent_selection_time:
             logging.info(f'releasing {selected_object}')
             selected_object.deselect()
             selected_object = None
