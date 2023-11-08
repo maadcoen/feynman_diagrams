@@ -640,6 +640,7 @@ class Text(Target):
     def remove(self):
         logging.info(f'removing {self}')
         super().remove()
+        self.target.label = None
         self._text_patch.remove()
 
 
