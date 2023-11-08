@@ -148,6 +148,7 @@ class Target(SelectObject):
             self.patch.set_center(self._default_loc())
 
     def remove(self):
+        logging.info(f'removing target of {self}')
         del self.patch
         del self.label
 
@@ -637,6 +638,7 @@ class Text(Target):
         return f"Text('{self.text}') for {self.parent}"
 
     def remove(self):
+        logging.info(f'removing {self}')
         super().remove()
         self._text_patch.remove()
 
