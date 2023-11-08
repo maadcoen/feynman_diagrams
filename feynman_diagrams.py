@@ -787,6 +787,7 @@ def on_key_press(event):
     k = event.key
     if isinstance(selected_object, Text):
         if k == 'escape':
+            selected_object.deselect()
             selected_object.remove()
             selected_object = None
         elif k == 'enter':
