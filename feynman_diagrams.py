@@ -823,7 +823,7 @@ def on_key_press(event):
         selected_object = Vertex(event.xdata, event.ydata, **kwargs)
         selected_object.select()
 
-    if k == 'd':
+    if k == 'd' and selected_object is not None:
         if isinstance(selected_object, Vertex):
             selected_object.remove()
         elif isinstance(selected_object, LegTarget):
