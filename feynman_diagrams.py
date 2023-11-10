@@ -932,8 +932,12 @@ def on_key_press(event):
             v.deselect() if k == 'e' else v.remove()
         selected_object = None
     if k == 'm':
+        for ax in axes.flatten():
+            ax.axis(False)
         fig.savefig(os.path.join(save_to, f'feynman_diagram_{saved}.pdf'),
                     bbox_inches='tight')
+        for ax in axes.flatten():
+            ax.axis(False)
         saved += 1
     fig.canvas.draw()
 
