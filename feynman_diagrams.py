@@ -70,7 +70,6 @@ class Target(SelectObject):
         self.active_color = active_color
         self.radius = radius
         self.passive_color = passive_color
-        self.ax = plt.gca() if ax is None else ax
         self._patch = None
         self._labels = []
 
@@ -681,7 +680,6 @@ class Vertex(SelectObject):
         super().__init__()
         if ax is None:
             ax = plt.gca()
-        self.ax = ax
         def_patch_kwargs = dict(color='black', facecolor=None)
         self.patch_kwargs = def_patch_kwargs | patch_kwargs
         self.index = self.count
