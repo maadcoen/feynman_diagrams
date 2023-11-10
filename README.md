@@ -10,7 +10,7 @@ Also, when running pyplot, it should plot to the interactive window.  Then clone
 file feynman_diagrams.py. For instance,
 ```bash
 git clone git@github.com:maadcoen/feynman_diagrams.git
-python3 feynman_diagrams.py
+python3 feynman_diagrams.py -h # check out command line options
 ```
 
 ## Usage
