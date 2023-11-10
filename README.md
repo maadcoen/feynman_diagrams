@@ -32,12 +32,16 @@ This application allows you to draw Feynman diagrams with various features. You 
 
 1. Select a vertex, a connection, or a prong.
 2. Move the pointer to the desired location.
-3. Press 't'.
-4. Start typing (supports LaTeX commands if supported by matplotlib).
+3. Press 't'. A cursor '/' will appear.
+4. Start typing at the cursor (supports LaTeX commands if supported by matplotlib).
 5. Press:
     - 'backspace': Remove the last added character.
     - 'enter': Leave label adding mode and keep the label.
     - 'escape': Leave label adding mode and discard the label.
+    - 'up' or 'down': Enlarge or decrease fontsize
+    - 'left' or 'right': Move cursor 
+    - 'control': store text object into memory for copying
+6. Select another vertex, connection, or prong and press 'control' to copy previously stored label
 
 Labels can be clicked and moved like prongs and vertices and will move together with the object they label.
 
