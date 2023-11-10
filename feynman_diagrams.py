@@ -6,6 +6,21 @@ import matplotlib.patches as mpatch
 import time
 import logging
 from typing import List
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument('-o', '--out-dir', default='.',
+                    help='output folder where diagrams are stored when pressing m')
+parser.add_argument('-n', '--name', default='feynman_diagram',
+                    help='name used for saving of the diagram when pressing m')
+parser.add_argument('-fmt', '--format', default='pdf',
+                    help='format in which diagrams ar stored')
+parser.add_argument('-a', '--axes-number', nargs='+', default=1, type=int,
+                    help='number of axes required. If more then one number is provided, the first two are'
+                         'considered as row and column numbers of the axes grid.')
+parser.add_argument('--keep-box', action='store_true',
+                    help='Keep the box around each of the requested axes in saved file.')
+args = parser.parse_args()
 
 saved = 0
 save_to = '/Users/maadcoen/Documents/PhD/teaching/SubA_II/suba_exercises/images'
@@ -932,16 +947,17 @@ def on_key_press(event):
             v.deselect() if k == 'e' else v.remove()
         selected_object = None
     if k == 'm':
-        for ax in axes.flatten():
-            ax.axis(False)
-        name = f'feynman_diagram_{saved}.pdf' if saved else f'feynman_diagram.pdf'
-        while os.path.exists(os.path.join(save_to, name)):
+        if not args.keep_box:
+            for ax in axes.flatten():
+                ax.axis(False)
+        name = f'{args.name}_{saved}.pdf' if saved else f'{args.name}.pdf'
+        while os.path.exists(os.path.join(args.out_dir, name)):
             saved += 1
-            name = f'feynman_diagram_{saved}.pdf'
-        fig.savefig(os.path.join(save_to, name),
-                    bbox_inches='tight')
-        for ax in axes.flatten():
-            ax.axis(False)
+            name = f'{args.name}_{saved}.pdf'
+        fig.savefig(os.path.join(args.out_dir, name), bbox_inches='tight')
+        if not args.keep_box:
+            for ax in axes.flatten():
+                ax.axis(False)
         saved += 1
     fig.canvas.draw()
 
@@ -1009,7 +1025,9 @@ def on_release(event):
 
 
 # Create a Matplotlib figure and axis
-grid = (1, 1)
+grid = args.axes_number[:2]
+if len(grid) == 1:
+    grid = [1, grid[0]]
 fig, axes = plt.subplots(*grid, figsize=(8 * grid[1], 6 * grid[0]), squeeze=False)
 
 fig.suptitle("Draw Feynman diagrams")
