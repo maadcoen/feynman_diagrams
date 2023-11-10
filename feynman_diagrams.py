@@ -1030,8 +1030,6 @@ if len(grid) == 1:
     grid = [1, grid[0]]
 fig, axes = plt.subplots(*grid, figsize=(8 * grid[1], 6 * grid[0]), squeeze=False)
 
-fig.suptitle("Draw Feynman diagrams")
-
 for ax in axes.flatten():
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
