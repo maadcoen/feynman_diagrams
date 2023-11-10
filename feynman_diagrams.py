@@ -285,12 +285,14 @@ class VertexTarget(Target):
         return self
 
     def select(self):
+        if self.connect is not None:
+            if self.leg is not None: # still select leg if connected
+                self.leg.select()
+            return
+        if super().select() is None: # only selectable if not connected
+            return
         if self.leg is not None:
             self.leg.select()
-        if self.connect is not None:
-            return
-        if super().select() is None:
-            return
         return self
 
 
