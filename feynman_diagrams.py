@@ -606,6 +606,7 @@ class Text(Target):
         def_text_args = dict(ha='center', va='center', fontsize=15)
         def_text_args |= text_args
         self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
+        self._target = self.parent
         self.target.labels.append(self)
         self.target = self.parent
         self.target.label = self
@@ -613,6 +614,19 @@ class Text(Target):
     def move(self, loc=None, force=False, redraw=True, restore=False):
         super().move(loc, force, redraw, restore)
         self._text_patch.set_position(self.loc)
+
+    @property
+    def target(self) -> Target:
+        return self._target
+
+    @target.setter
+    def target(self, t):
+        if self in self.target.labels:
+            self.target.labels.remove(self)
+        self.parent = t
+        self._target = t
+        self.target.labels.append(self)
+        self.move(force=True)
 
     @property
     def text(self):
