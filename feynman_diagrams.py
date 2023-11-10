@@ -617,11 +617,22 @@ class Text(Target):
         self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
         self._target = self.parent
         self.target.labels.append(self)
+        self._pointer = 0
+        self.pointer_symbol = '/'
 
 
     def move(self, loc=None, force=False, redraw=True, restore=False):
         super().move(loc, force, redraw, restore)
         self._text_patch.set_position(self.loc)
+
+    @property
+    def pointer(self):
+        return self._pointer
+
+    @pointer.setter
+    def pointer(self, p):
+        self._pointer = p
+        self.draw()
 
     @property
     def target(self) -> Target:
@@ -643,7 +654,7 @@ class Text(Target):
     @text.setter
     def text(self, text):
         self._text = text
-        self._text_patch.set_text(text)
+        self.draw()
 
     def select(self):
         if super().select() is None:
@@ -652,6 +663,7 @@ class Text(Target):
         self.patch.set_color(self.passive_color)
         self._text_patch.set_color(self.target.active_color)
         self._text_patch.set_zorder(np.inf)
+        self.draw()
         return self
 
     def deselect(self):
@@ -659,14 +671,19 @@ class Text(Target):
             return
         self._text_patch.set_color(self.text_passive_color)
         self._text_patch.set_zorder(-1)
+        self.draw()
         return self
 
     def __iadd__(self, other: str):
-        self.text = self.text + other
+        self.text = self.text[:self.pointer] + other + self.text[self.pointer:]
+        self.pointer += len(other)
+        self.draw()
         return self
 
     def undo(self):
-        self.text = self.text[:-1]
+        self.text = self.text[:self.pointer - 1] + self.text[self.pointer:]
+        self.pointer -= 1
+        self.draw()
 
     def __str__(self):
         return f"Text('{self.text}') for {self.parent}"
@@ -674,6 +691,11 @@ class Text(Target):
     def change_fontsize(self, up=True):
         self._text_patch.set_fontsize(self._text_patch.get_fontsize() + (2 if up else -2))
         Text.fontsize = self._text_patch.get_fontsize()
+
+    def draw(self):
+        ps = self.pointer_symbol if self.is_selected else ''
+        text = self.text[:self.pointer] + ps + self.text[self.pointer:]
+        self._text_patch.set_text(text)
 
     def remove(self):
         logging.info(f'removing {self}')
@@ -683,9 +705,11 @@ class Text(Target):
         self._text_patch.remove()
 
     def copy(self, target=None):
-        return Text(self.text, self.target if target is None else target, self.rel_loc,
+        t = Text(self.text, self.target if target is None else target, self.rel_loc,
                         self.radius, self.text_passive_color, self.active_color,
                         fontsize=self._text_patch.get_fontsize())
+        t.pointer = self.pointer
+        return t
 
 
 class Vertex(SelectObject):
@@ -834,6 +858,8 @@ def on_key_press(event):
             selected_object = None
         elif k == 'backspace':
             selected_object.undo()
+        elif k in ['left', 'right']:
+            selected_object.pointer += (-1 if k == 'left' else 1)
         elif k in ['up', 'down']:
             selected_object.change_fontsize(up=k == 'up')
         elif k == 'control':
