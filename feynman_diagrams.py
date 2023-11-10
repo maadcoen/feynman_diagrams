@@ -734,9 +734,7 @@ class Vertex(SelectObject):
 
     def __init__(self, x=0, y=0, r=1, th0=0, n_prongs=3, fixed=False, ax=None, fig=None,
                  arrows=None, center_mark=True, shapes=None, **patch_kwargs):
-        super().__init__()
-        if ax is None:
-            ax = plt.gca()
+        super().__init__(ax=ax)
         def_patch_kwargs = dict(color='black', facecolor=None)
         self.patch_kwargs = def_patch_kwargs | patch_kwargs
         self.index = self.count
