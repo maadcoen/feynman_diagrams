@@ -865,7 +865,7 @@ def on_key_press(event):
         elif k in ['up', 'down']:
             selected_object.change_fontsize(up=k == 'up')
         elif k == 'control':
-            copied_text = selected_object.copy()
+            copied_text = selected_object
         elif len(k) == 1:
             selected_object += k
         return fig.canvas.draw()
@@ -883,8 +883,11 @@ def on_key_press(event):
         selected_object.select()
         selected_object.move((event.xdata, event.ydata), force=True)
 
-    if k == 'control' and isinstance(selected_object, (Target, Vertex)) and isinstance(copied_text, Text):
-        copied_text.target = selected_object if isinstance(selected_object, Target) else selected_object.center
+    if k == 'control' and isinstance(copied_text, Text):
+        logging.debug(f'pressed {k} and {copied_text} is copied')
+        if isinstance(selected_object, (Target, Vertex)):
+            logging.debug(f'pressed {k} and {selected_object} is selected')
+            copied_text.copy(selected_object if isinstance(selected_object, Target) else selected_object.center)
         selected_object.deselect()
         selected_object = None
         return fig.canvas.draw()
