@@ -2,6 +2,17 @@
 
 This application allows you to draw Feynman diagrams with various features. You can create and manipulate vertices, prongs, connections, and labels using a set of keyboard commands and mouse interactions.
 
+
+## Setup
+
+Make sure you're working in a python 3 environment with numpy and matplotlib installed. 
+Also, when running pyplot, it should plot to the interactive window.  Then clone the project and run 
+file feynman_diagrams.py. For instance,
+```bash
+git clone git@github.com:maadcoen/feynman_diagrams.git
+python3 feynman_diagrams.py
+```
+
 ## Usage
 
 - Press any number (1 to 10) to create a vertex with the specified number of prongs.
