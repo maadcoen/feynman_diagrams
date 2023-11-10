@@ -154,6 +154,8 @@ class Target(SelectObject):
             self.patch.set_center(loc)
         else:
             self.patch.set_center(self._default_loc())
+        for l in self.labels:
+            l.move(force=True)
 
     def remove(self):
         logging.info(f'removing target of {self}')
