@@ -678,6 +678,11 @@ class Text(Target):
             self.target.labels.remove(self)
         self._text_patch.remove()
 
+    def copy(self, target=None):
+        return Text(self.text, self.target if target is None else target, self.rel_loc,
+                        self.radius, self.text_passive_color, self.active_color,
+                        fontsize=self._text_patch.get_fontsize())
+
 
 class Vertex(SelectObject):
     count = 0
