@@ -1017,7 +1017,7 @@ fig.suptitle("Draw Feynman diagrams")
 for ax in axes.flatten():
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
-    ax.axis(False)
+    ax.tick_params(which='both', left=False, bottom=False,  labelleft=False, labelbottom=False)
 
 for k in plt.rcParams:
     if 'keymap.' in k:
