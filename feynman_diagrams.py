@@ -955,7 +955,7 @@ def on_key_press(event):
         fig.savefig(os.path.join(args.out_dir, name), bbox_inches='tight')
         if not args.keep_box:
             for ax in axes.flatten():
-                ax.axis(False)
+                ax.axis(True)
         saved += 1
     fig.canvas.draw()
 
