@@ -72,7 +72,7 @@ class Target(SelectObject):
         self.passive_color = passive_color
         self.ax = plt.gca() if ax is None else ax
         self._patch = None
-        self._label = None
+        self._labels = []
 
     @property
     def connect(self):
@@ -112,18 +112,14 @@ class Target(SelectObject):
         self.move(loc, force=True)
 
     @property
-    def label(self):
-        return self._label
+    def labels(self) -> List['Text']:
+        return self._labels
 
-    @label.setter
-    def label(self, label):
-        self._label = label
-
-    @label.deleter
-    def label(self):
-        if self._label is not None:
-            self._label.remove()
-        self._label = None
+    @labels.deleter
+    def labels(self):
+        for l in self.labels:
+            l.remove()
+        self._labels = []
 
     def deselect(self):
         if super().deselect() is None:
@@ -133,8 +129,8 @@ class Target(SelectObject):
         else:
             self.patch.set_color(self.passive_color)
         self.patch.set_zorder(-1)
-        if self.label is not None:
-            self.label.deselect()
+        for l in self.labels:
+            l.deselect()
         return self
 
     def select(self):
@@ -163,7 +159,7 @@ class Target(SelectObject):
     def remove(self):
         logging.info(f'removing target of {self}')
         del self.patch
-        del self.label
+        del self.labels
 
     def __copy__(self):
         return Target(self._default_loc, self.patch.radius, self.passive_color, self.active_color, self.ax)
@@ -171,8 +167,9 @@ class Target(SelectObject):
     def hit(self, click_event):
         if click_event.artist == self:
             return self
-        if click_event.artist == self.label:
-            return self.label
+        for l in self.labels:
+            if click_event.artist == l:
+                return l
 
 
 class VertexTarget(Target):
@@ -593,8 +590,9 @@ class Leg(SelectObject):
     def hit(self, click_event):
         if click_event.artist == self.leg_target:
             return self.leg_target
-        elif click_event.artist == self.leg_target.label:
-            return self.leg_target.label
+        for l in self.leg_target.labels:
+            if click_event.artist == l:
+                return l
 
     def disconnect(self):
         del self.target.connect
@@ -608,6 +606,7 @@ class Text(Target):
         def_text_args = dict(ha='center', va='center', fontsize=15)
         def_text_args |= text_args
         self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
+        self.target.labels.append(self)
         self.target = self.parent
         self.target.label = self
 
@@ -653,7 +652,8 @@ class Text(Target):
     def remove(self):
         logging.info(f'removing {self}')
         super().remove()
-        self.target.label = None
+        if self in self.target.labels:
+            self.target.labels.remove(self)
         self._text_patch.remove()
 
 
