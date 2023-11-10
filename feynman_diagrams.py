@@ -335,10 +335,11 @@ class LegTarget(Target):
 
 
 class Leg(SelectObject):
-    def __init__(self, target: VertexTarget, arrow_out=None, shape=None):
-        super().__init__()
+    def __init__(self, target: VertexTarget, arrow_out=None, shape=None, color='black'):
+        super().__init__(target)
         self.target = target
         self.vertex = self.target.vertex
+        self.color = color
         self._patch = None
         self._arrow_out = arrow_out
         self._arrow_patch = None
@@ -421,7 +422,7 @@ class Leg(SelectObject):
     @arrow_patch.setter
     def arrow_patch(self, path):
         if self._arrow_patch is None:
-            self._arrow_patch = mpatch.PathPatch(path, **self.vertex.patch_kwargs)
+            self._arrow_patch = mpatch.PathPatch(path, color=self.color)
             self.vertex.ax.add_patch(self._arrow_patch)
         else:
             self._arrow_patch.set_path(path)
@@ -586,7 +587,7 @@ class Leg(SelectObject):
         self.patch.set_zorder(-1)
         if self.arrow_patch is not None:
             self.arrow_patch.set_zorder(-1)
-            self.arrow_patch.set_color(self.target.passive_color)
+            self.arrow_patch.set_color(self.color)
 
     def hit(self, click_event):
         if click_event.artist == self.leg_target:
