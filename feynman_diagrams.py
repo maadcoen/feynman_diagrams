@@ -341,6 +341,7 @@ class LegTarget(Target):
 class Leg(SelectObject):
     def __init__(self, target: VertexTarget, arrow_out=None, shape=None, color='black'):
         super().__init__(target)
+        self.parent = None
         self.target = target
         self.vertex = self.target.vertex
         self.color = color
