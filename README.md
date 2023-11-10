@@ -34,7 +34,7 @@ python3 feynman_diagrams.py -h # check out command line options
       - 'RG': gold (yellow is to light)
       - 'RB': magenta
       - 'GB': cyan
-      - 'K' always reset to black
+      - 'K' always resets to black
 
 ## Additional Commands
 
