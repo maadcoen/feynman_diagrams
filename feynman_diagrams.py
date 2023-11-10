@@ -825,6 +825,8 @@ def on_key_press(event):
             selected_object = None
         elif k == 'backspace':
             selected_object.undo()
+        elif k in ['up', 'down']:
+            selected_object.change_fontsize(up=k == 'up')
         elif len(k) == 1:
             selected_object += k
         return fig.canvas.draw()
