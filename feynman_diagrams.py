@@ -601,12 +601,13 @@ class Leg(SelectObject):
 
 
 class Text(Target):
+    fontsize = 15
     def __init__(self, text, target, rel_loc=(0, 0), radius=0.15, text_passive_color='black', active_color='red',
                  **text_args):
         super().__init__(target, rel_loc, radius, None, active_color)
         self.text_passive_color = text_passive_color
         self._text = text
-        def_text_args = dict(ha='center', va='center', fontsize=15, color=text_passive_color)
+        def_text_args = dict(ha='center', va='center', fontsize=Text.fontsize, color=text_passive_color)
         def_text_args |= text_args
         self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
         self._target = self.parent
@@ -665,6 +666,10 @@ class Text(Target):
 
     def __str__(self):
         return f"Text('{self.text}') for {self.parent}"
+
+    def change_fontsize(self, up=True):
+        self._text_patch.set_fontsize(self._text_patch.get_fontsize() + (2 if up else -2))
+        Text.fontsize = self._text_patch.get_fontsize()
 
     def remove(self):
         logging.info(f'removing {self}')
