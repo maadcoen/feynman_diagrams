@@ -617,8 +617,7 @@ class Text(Target):
         self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
         self._target = self.parent
         self.target.labels.append(self)
-        self.target = self.parent
-        self.target.label = self
+
 
     def move(self, loc=None, force=False, redraw=True, restore=False):
         super().move(loc, force, redraw, restore)
