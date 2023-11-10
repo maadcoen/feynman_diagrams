@@ -780,13 +780,12 @@ class Vertex(SelectObject):
         logging.debug(f'{self.select_target}.select() returned {sel_obj}')
         if sel_obj not in self.targets:
             return sel_obj
-        if super().select() is None:
-            return
-        for t in self.targets[1:]:
-            t.leg.select()
         if self.select_target == self.center:
+            for t in self.targets[1:]:
+                t.leg.select()
             self.select_target.select()
             sel_obj = self
+            super().select()
         return sel_obj
 
     def deselect(self, keep_target=False):
