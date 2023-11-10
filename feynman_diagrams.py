@@ -763,31 +763,27 @@ class Vertex(SelectObject):
             self.select_target = None
         return self
 
-    def make_arrow(self, t_idx=None, out=None):
+    def get_decoratable_target(self, t_idx=None):
+        if len(self.targets) == 2:
+            return self.targets[1]
         if t_idx is None:
             if self.select_target is None:
                 return
             t = self.select_target
         else:
             t = self.targets[t_idx]
-        if len(self.targets) == 2:
-            t = self.targets[1]
-        if t == self.targets[0]:
-            return
-        t.arrow_out = out
+        if t != self.center:
+            return t
+
+    def make_arrow(self, t_idx=None, out=None):
+        t = self.get_decoratable_target(t_idx)
+        if t is not None:
+            t.arrow_out = out
 
     def make_shape(self, t_idx=None, shape=None):
-        if t_idx is None:
-            if self.select_target is None:
-                return
-            t = self.select_target
-        else:
-            t = self.targets[t_idx]
-        if len(self.targets) == 2:
-            t = self.targets[1]
-        if t == self.targets[0]:
-            return
-        t.shape = shape
+        t = self.get_decoratable_target(t_idx)
+        if t is not None:
+            t.shape = shape
 
     def connect(self, other):
         if other.select_target not in other.targets:
