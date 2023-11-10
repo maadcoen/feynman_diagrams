@@ -30,6 +30,16 @@ if os.path.exists(logfile):
 logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.INFO, force=True,
                     format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%H:%M:%S')
 
+qcd_color_dict = dict(
+    BR='magenta',
+    BG='cyan',
+    GR='gold',
+    R='red',
+    G='green',
+    B='blue',
+    K='black'
+)
+
 
 class SelectObject:
     def __init__(self, parent=None, ax=None):
@@ -354,12 +364,12 @@ class LegTarget(Target):
 
 
 class Leg(SelectObject):
-    def __init__(self, target: VertexTarget, arrow_out=None, shape=None, color='black'):
+    def __init__(self, target: VertexTarget, arrow_out=None, shape=None, color='K'):
         super().__init__(target)
         self.parent = None
         self.target = target
         self.vertex = self.target.vertex
-        self.color = color
+        self._color = color
         self._patch = None
         self._arrow_out = arrow_out
         self._arrow_patch = None
@@ -372,6 +382,22 @@ class Leg(SelectObject):
         return f'leg from {self.target}'
 
     @property
+    def color(self):
+        return qcd_color_dict[''.join(sorted(self._color))]
+
+    @color.setter
+    def color(self, c):
+        if c == 'K':
+            self._color = 'K'
+        elif c in ['R', 'G', 'B']:
+            self._color = self._color[-1:].strip('K') + c
+            if self._color[0] == self._color[-1]:
+                self._color = self._color[0]
+        self.patch.set_color(self.color)
+        if self.arrow_patch is not None:
+            self.arrow_patch.set_color(self.color)
+
+    @property
     def patch(self):
         if self._patch is None:
             self.make_path()
@@ -381,7 +407,7 @@ class Leg(SelectObject):
     def patch(self, path):
         if self._patch is None:
             logging.info(f'creating patch for {self}')
-            self._patch = mpatch.PathPatch(path, **self.vertex.patch_kwargs, fill=False)
+            self._patch = mpatch.PathPatch(path, color=self.color, fill=False)
             self.vertex.ax.add_patch(self._patch)
         else:
             self._patch.set_path(path)
@@ -603,7 +629,7 @@ class Leg(SelectObject):
             self.target.connect.leg.deselect()
         if not self.visible:
             return
-        self.patch.set_color(self.target.passive_color)
+        self.patch.set_color(self.color)
         self.patch.set_zorder(-1)
         if self.arrow_patch is not None:
             self.arrow_patch.set_zorder(-1)
@@ -939,6 +965,8 @@ def on_key_press(event):
                 t.shape = None
             if k in 'gph':
                 t.shape = k
+            if k in 'RGBK':
+                t.leg.color = k
 
     if k in 'ex':
         for v in Vertex.vertices[::-1]:
