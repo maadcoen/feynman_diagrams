@@ -5,6 +5,7 @@ from matplotlib.path import Path
 import matplotlib.patches as mpatch
 import time
 import logging
+from typing import List
 
 saved = 0
 save_to = '/Users/maadcoen/Documents/PhD/teaching/SubA_II/suba_exercises/images'
