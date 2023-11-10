@@ -862,14 +862,20 @@ def on_key_press(event):
             selected_object.disconnect()
         selected_object.deselect()
         selected_object = None
-    if isinstance(selected_object, (VertexTarget, LegTarget)):
-        if k in 'io':
-            selected_object.arrow_out = k == 'o'
-        if k == '-':
-            selected_object.arrow_out = None
-            selected_object.shape = None
-        if k in 'gph':
-            selected_object.shape = k
+    if isinstance(selected_object, (Vertex, VertexTarget, LegTarget)):
+        t = selected_object
+        if isinstance(selected_object, Vertex):
+            t = selected_object.get_decoratable_target()
+        if t is not None:
+            if k in 'io':
+                t.arrow_out = k == 'o'
+                t.shape = None
+            if k == '-':
+                t.arrow_out = None
+                t.shape = None
+            if k in 'gph':
+                t.shape = k
+
     if k in 'ex':
         for v in Vertex.vertices[::-1]:
             v.deselect() if k == 'e' else v.remove()
