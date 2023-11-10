@@ -775,7 +775,9 @@ class Vertex(SelectObject):
     def select(self):
         if self.select_target is None:
             self.select_target = self.targets[0]
+        logging.debug(f'calling {self.select_target}.select()')
         sel_obj = self.select_target.select()
+        logging.debug(f'{self.select_target}.select() returned {sel_obj}')
         if sel_obj not in self.targets:
             return sel_obj
         if super().select() is None:
@@ -849,6 +851,7 @@ def on_key_press(event):
     global selected_object, saved, copied_text
     k = event.key
     if isinstance(selected_object, Text):
+        logging.debug(f'{selected_object} is selected')
         if k == 'escape':
             selected_object.deselect()
             selected_object.remove()
@@ -869,6 +872,7 @@ def on_key_press(event):
         return fig.canvas.draw()
 
     if k == 't' and selected_object is not None:
+        logging.debug(f'pressed t and {selected_object} is selected')
         if isinstance(selected_object, Vertex):
             target = selected_object.center
         elif isinstance(selected_object, Target):
@@ -888,6 +892,7 @@ def on_key_press(event):
 
     if k in 'sfqQ' or k.isnumeric():
         if selected_object is not None:
+            logging.debug(f'pressed {k} and {selected_object} is selected')
             selected_object.deselect()
             selected_object = None
         kwargs = dict(n_prongs=int(k) if k.isnumeric() else (3 if k.lower() == 'q' else 1),
@@ -896,6 +901,7 @@ def on_key_press(event):
                       shapes=['photon' if k == 'q' else 'gluon', None, None] if k.lower() == 'q' else None,
                       ax=event.inaxes, center_mark=k in 'sf')
         selected_object = Vertex(event.xdata, event.ydata, **kwargs)
+        logging.debug(f'pressed {k} and adding {selected_object}')
         selected_object.select()
 
     if k == 'd' and selected_object is not None:
