@@ -601,11 +601,12 @@ class Leg(SelectObject):
 
 
 class Text(Target):
-    def __init__(self, text, target, rel_loc=(0, 0), radius=0.15, passive_color='black', active_color='red',
+    def __init__(self, text, target, rel_loc=(0, 0), radius=0.15, text_passive_color='black', active_color='red',
                  **text_args):
-        super().__init__(target, rel_loc, radius, passive_color, active_color)
+        super().__init__(target, rel_loc, radius, None, active_color)
+        self.text_passive_color = text_passive_color
         self._text = text
-        def_text_args = dict(ha='center', va='center', fontsize=15)
+        def_text_args = dict(ha='center', va='center', fontsize=15, color=text_passive_color)
         def_text_args |= text_args
         self._text_patch = target.ax.text(*self.loc, text, **def_text_args)
         self._target = self.parent
@@ -651,7 +652,7 @@ class Text(Target):
     def deselect(self):
         if super().deselect():
             return
-        self._text_patch.set_color(self.passive_color)
+        self._text_patch.set_color(self.text_passive_color)
         self._text_patch.set_zorder(-1)
         return self
 
