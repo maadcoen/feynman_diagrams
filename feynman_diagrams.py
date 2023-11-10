@@ -16,13 +16,26 @@ logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.INFO, forc
 
 
 class SelectObject:
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, ax=None):
         self.select_time = None
-        self.parent = parent
+        self._parent = parent
         self.moving = False
+        self.ax = self.parent.ax if parent is not None else (plt.gca() if ax is None else ax)
+
+    @property
+    def is_selected(self):
+        return self.select_time is not None
+
+    @property
+    def parent(self):
+        return self._parent
+
+    @parent.setter
+    def parent(self, p):
+        self._parent = p
 
     def select(self):
-        if self.select_time is not None:
+        if self.is_selected:
             self.select_time = time.time()
             return
         logging.info(f'selecting {self}')
@@ -33,7 +46,7 @@ class SelectObject:
         return self
 
     def deselect(self):
-        if self.select_time is None:
+        if not self.is_selected:
             return None
         logging.info(f'deselecting {self}')
         self.select_time = None
@@ -51,7 +64,7 @@ selected_object: SelectObject = None
 
 class Target(SelectObject):
     def __init__(self, parent, rel_loc=(0, 0), radius=0.15, passive_color=None, active_color='red', ax=None):
-        super().__init__(parent)
+        super().__init__(parent, ax)
         self.rel_loc = rel_loc
         self.orginal_rel_loc = rel_loc
         self.active_color = active_color
