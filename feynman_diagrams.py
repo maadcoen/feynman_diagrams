@@ -934,7 +934,11 @@ def on_key_press(event):
     if k == 'm':
         for ax in axes.flatten():
             ax.axis(False)
-        fig.savefig(os.path.join(save_to, f'feynman_diagram_{saved}.pdf'),
+        name = f'feynman_diagram_{saved}.pdf' if saved else f'feynman_diagram.pdf'
+        while os.path.exists(os.path.join(save_to, name)):
+            saved += 1
+            name = f'feynman_diagram_{saved}.pdf'
+        fig.savefig(os.path.join(save_to, name),
                     bbox_inches='tight')
         for ax in axes.flatten():
             ax.axis(False)
