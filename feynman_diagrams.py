@@ -60,6 +60,7 @@ class SelectObject:
 
 
 selected_object: SelectObject = None
+copied_text = None
 
 
 class Target(SelectObject):
@@ -818,7 +819,7 @@ class Vertex(SelectObject):
 
 
 def on_key_press(event):
-    global selected_object, saved
+    global selected_object, saved, copied_text
     k = event.key
     if isinstance(selected_object, Text):
         if k == 'escape':
@@ -832,6 +833,8 @@ def on_key_press(event):
             selected_object.undo()
         elif k in ['up', 'down']:
             selected_object.change_fontsize(up=k == 'up')
+        elif k == 'control':
+            copied_text = selected_object.copy()
         elif len(k) == 1:
             selected_object += k
         return fig.canvas.draw()
@@ -847,6 +850,12 @@ def on_key_press(event):
         selected_object = Text('', target)
         selected_object.select()
         selected_object.move((event.xdata, event.ydata), force=True)
+
+    if k == 'control' and isinstance(selected_object, (Target, Vertex)) and isinstance(copied_text, Text):
+        copied_text.target = selected_object if isinstance(selected_object, Target) else selected_object.center
+        selected_object.deselect()
+        selected_object = None
+        return fig.canvas.draw()
 
     if k in 'sfqQ' or k.isnumeric():
         if selected_object is not None:
