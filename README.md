@@ -1,13 +1,14 @@
 # Feynman Diagram Drawing Application
 
-This application allows you to draw Feynman diagrams with various features. You can create and manipulate vertices, prongs, connections, and labels using a set of keyboard commands and mouse interactions.
-
+This application allows you to draw Feynman diagrams with various features. You can create and manipulate vertices,
+prongs, connections, and labels using a set of keyboard commands and mouse interactions.
 
 ## Setup
 
-Make sure you're working in a python 3 environment with numpy and matplotlib installed. 
-Also, when running pyplot, it should plot to the interactive window.  Then clone the project and run 
+Make sure you're working in a python 3 environment with numpy and matplotlib installed.
+Also, when running pyplot, it should plot to the interactive window. Then clone the project and run
 file feynman_diagrams.py. For instance,
+
 ```bash
 git clone git@github.com:maadcoen/feynman_diagrams.git
 python3 feynman_diagrams.py -h # check out command line options
@@ -28,6 +29,12 @@ python3 feynman_diagrams.py -h # check out command line options
     - 'i': Inwards arrow (spring)
     - 'o': Outwards arrow
     - '-': Flat
+    - 'R', 'G', 'B', 'K': Change "color charge". Changing color a second time will mix with the last added color, to
+      simulate gluon charges. The combinations are
+      - 'RG': gold (yellow is to light)
+      - 'RB': magenta
+      - 'GB': cyan
+      - 'K' always reset to black
 
 ## Additional Commands
 
@@ -50,7 +57,7 @@ python3 feynman_diagrams.py -h # check out command line options
     - 'enter': Leave label adding mode and keep the label.
     - 'escape': Leave label adding mode and discard the label.
     - 'up' or 'down': Enlarge or decrease fontsize
-    - 'left' or 'right': Move cursor 
+    - 'left' or 'right': Move cursor
     - 'control': store text object into memory for copying
 6. Select another vertex, connection, or prong and press 'control' to copy previously stored label
 
