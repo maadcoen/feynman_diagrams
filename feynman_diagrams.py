@@ -980,7 +980,9 @@ def on_key_press(event):
         while os.path.exists(os.path.join(args.out_dir, name)):
             saved += 1
             name = f'{args.name}_{saved}.pdf'
-        fig.savefig(os.path.join(args.out_dir, name), bbox_inches='tight')
+        savename = os.path.join(args.out_dir, name)
+        fig.savefig(savename, bbox_inches='tight')
+        print(f'saved {savename}')
         if not args.keep_box:
             for ax in axes.flatten():
                 ax.axis(True)
