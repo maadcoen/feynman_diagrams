@@ -272,6 +272,8 @@ class VertexTarget(Target):
         self.move(force=True, restore=True)
         # self.patch.set_picker(True)
         self.leg.visible = True
+        del self.leg.leg_target.labels
+        del target.leg.leg_target.labels
         self.leg.deselect()
 
         del target.connect
