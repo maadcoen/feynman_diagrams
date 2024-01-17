@@ -736,6 +736,12 @@ class Text(Target):
         self._text_patch.set_fontsize(self._text_patch.get_fontsize() + (2 if up else -2))
         Text.fontsize = self._text_patch.get_fontsize()
 
+    def move_pointer(self, direction):
+        if direction == 'right':
+            self.pointer = min(len(self.text), self.pointer + 1)
+        else:
+            self.pointer = max(0, self.pointer - 1)
+
     def draw(self):
         ps = self.pointer_symbol if self.is_selected else ''
         text = self.text[:self.pointer] + ps + self.text[self.pointer:]
@@ -919,7 +925,7 @@ def on_key_press(event):
         elif k == 'backspace':
             selected_object.undo()
         elif k in ['left', 'right']:
-            selected_object.pointer += (-1 if k == 'left' else 1)
+            selected_object.move_pointer(k)
         elif k in ['up', 'down']:
             selected_object.change_fontsize(up=k == 'up')
         elif k == 'control':
