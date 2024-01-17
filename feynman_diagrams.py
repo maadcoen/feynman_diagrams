@@ -761,6 +761,14 @@ class Text(Target):
         t.pointer = self.pointer
         return t
 
+    def remove_tex_math(self):
+        if '$' in self.text:
+            i = self.text.find('$')
+            if i <= self.pointer:
+                self.move_pointer('left')
+            self.text = self.text[:i] + self.text[i+1:]
+            self.remove_tex_math()
+
 
 class Vertex(SelectObject):
     count = 0
@@ -900,10 +908,10 @@ def draw():
         fig.canvas.draw()
     except ValueError:
         if isinstance(selected_object, Text):
-            selected_object.text = selected_object.text.replace('$', '')
+            selected_object.remove_tex_math()
             fig.suptitle('invalid latex math: removing $')
-        if isinstance(previously_selected, Text):
-            previously_selected.text = previously_selected.text.replace('$', '')
+        elif isinstance(previously_selected, Text):
+            previously_selected.remove_tex_math()
             fig.suptitle('invalid latex math: removing $')
     fig.canvas.draw()
 
