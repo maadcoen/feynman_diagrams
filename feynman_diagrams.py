@@ -86,6 +86,7 @@ class SelectObject:
 
 
 selected_object: SelectObject = None
+previously_selected = None
 copied_text = None
 
 
@@ -887,17 +888,33 @@ class Vertex(SelectObject):
         Vertex.vertices.remove(self)
 
 
+def draw():
+    try:
+        fig.suptitle('')
+        fig.canvas.draw()
+    except ValueError:
+        if isinstance(selected_object, Text):
+            selected_object.text = selected_object.text.replace('$', '')
+            fig.suptitle('invalid latex math: removing $')
+        if isinstance(previously_selected, Text):
+            previously_selected.text = previously_selected.text.replace('$', '')
+            fig.suptitle('invalid latex math: removing $')
+    fig.canvas.draw()
+
+
 def on_key_press(event):
-    global selected_object, saved, copied_text
+    global selected_object, saved, copied_text, previously_selected
     k = event.key
     if isinstance(selected_object, Text):
         logging.debug(f'{selected_object} is selected')
         if k == 'escape':
             selected_object.deselect()
             selected_object.remove()
+            previously_selected = selected_object
             selected_object = None
         elif k == 'enter':
             selected_object.deselect()
+            previously_selected = selected_object
             selected_object = None
         elif k == 'backspace':
             selected_object.undo()
@@ -909,7 +926,7 @@ def on_key_press(event):
             copied_text = selected_object
         elif len(k) == 1:
             selected_object += k
-        return fig.canvas.draw()
+        return draw()
 
     if k == 't' and selected_object is not None:
         logging.debug(f'pressed t and {selected_object} is selected')
@@ -930,13 +947,15 @@ def on_key_press(event):
             logging.debug(f'pressed {k} and {selected_object} is selected')
             copied_text.copy(selected_object if isinstance(selected_object, Target) else selected_object.center)
         selected_object.deselect()
+        previously_selected = selected_object
         selected_object = None
-        return fig.canvas.draw()
+        return draw()
 
     if k in 'sfqQ' or k.isnumeric():
         if selected_object is not None:
             logging.debug(f'pressed {k} and {selected_object} is selected')
             selected_object.deselect()
+            previously_selected = selected_object
             selected_object = None
         kwargs = dict(n_prongs=int(k) if k.isnumeric() else (3 if k.lower() == 'q' else 1),
                       th0=np.pi if k == 'f' else 0,
@@ -953,6 +972,7 @@ def on_key_press(event):
         elif isinstance(selected_object, LegTarget):
             selected_object.disconnect()
         selected_object.deselect()
+        previously_selected = selected_object
         selected_object = None
     if isinstance(selected_object, (Vertex, VertexTarget, LegTarget)):
         t = selected_object
@@ -973,6 +993,7 @@ def on_key_press(event):
     if k in 'ex':
         for v in Vertex.vertices[::-1]:
             v.deselect() if k == 'e' else v.remove()
+        previously_selected = selected_object
         selected_object = None
     if k == 'm':
         if not args.keep_box:
@@ -989,11 +1010,11 @@ def on_key_press(event):
             for ax in axes.flatten():
                 ax.axis(True)
         saved += 1
-    fig.canvas.draw()
+    draw()
 
 
 def on_pick(event):
-    global selected_object
+    global selected_object, previously_selected
     logging.info('picking')
     if selected_object is not None:
         if time.time() - selected_object.select_time < 1e-1:
@@ -1007,7 +1028,7 @@ def on_pick(event):
                 selected_object.deselect()
             selected_object = selected_object.select()
             logging.info(f'selected object is {selected_object}')
-            return fig.canvas.draw()
+            return draw()
 
     for v in Vertex.vertices:
         v: Vertex
@@ -1020,9 +1041,10 @@ def on_pick(event):
                 vert.connect(v)
                 selected_object.deselect()
                 v.deselect()
+                previously_selected = selected_object
                 selected_object = None
             logging.info(f'selected object is {selected_object}')
-            return fig.canvas.draw()
+            return draw()
     logging.info(f'selected object is {selected_object}')
 
 
@@ -1034,20 +1056,21 @@ def on_motion(event):
         if time.time() - selected_object.select_time < permanent_selection_time:
             return
         selected_object.move((event.xdata, event.ydata))
-        fig.canvas.draw()
+        draw()
 
 
 # Function to reset the selected central point when releasing the mouse button
 def on_release(event):
-    global selected_object
+    global selected_object, previously_selected
     logging.info('releasing')
 
     if selected_object is not None:
         if time.time() - selected_object.select_time > permanent_selection_time:
             logging.info(f'releasing {selected_object}')
             selected_object.deselect()
+            previously_selected = selected_object
             selected_object = None
-            fig.canvas.draw()
+            draw()
         else:
             logging.info(f'freezing {selected_object}')
             selected_object.freeze()
